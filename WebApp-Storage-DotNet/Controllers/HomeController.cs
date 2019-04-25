@@ -46,24 +46,31 @@ namespace WebApp_Storage_DotNet.Controllers
     public class HomeController : Controller
     {
         static CloudBlobClient blobClient;
-        const string blobContainerName = "builddemo";
         static CloudBlobContainer blobContainer;
 
-        /// <summary> 
-        /// Task<ActionResult> Index() 
-        /// Documentation References:  
-        /// - What is a Storage Account: http://azure.microsoft.com/en-us/documentation/articles/storage-whatis-account/ 
-        /// - Create a Storage Account: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#create-an-azure-storage-account
-        /// - Create a Storage Container: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#create-a-container
-        /// - List all Blobs in a Storage Container: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#list-the-blobs-in-a-container
-        /// </summary> 
-        public async Task<ActionResult> Index()
+		// Constants
+	    private const string blobContainerName = "builddemo";
+	    private const string storageConnectionString =
+		    "DefaultEndpointsProtocol=https;AccountName=msftbuilddemo;AccountKey=PYgIVLKz8Qt5/" +
+		    "2maPE8/zZOZDMZw1o3o+SeNEGnEgkxDg47FswLk53cNYXt4u7kdFrpbeyDSiPUaVYCnWglO8A==" +
+		    ";EndpointSuffix=core.windows.net";
+	    private const string pictureDirectoryPath = "C:/Users/hebrevar/Pictures/";
+
+		/// <summary> 
+		/// Task<ActionResult> Index() 
+		/// Documentation References:  
+		/// - What is a Storage Account: http://azure.microsoft.com/en-us/documentation/articles/storage-whatis-account/ 
+		/// - Create a Storage Account: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#create-an-azure-storage-account
+		/// - Create a Storage Container: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#create-a-container
+		/// - List all Blobs in a Storage Container: https://azure.microsoft.com/en-us/documentation/articles/storage-dotnet-how-to-use-blobs/#list-the-blobs-in-a-container
+		/// </summary> 
+		public async Task<ActionResult> Index()
         {
             try
             {
                 // Retrieve storage account information from connection string
                 // How to create a storage connection string - http://msdn.microsoft.com/en-us/library/azure/ee758697.aspx
-                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"].ToString());
+                CloudStorageAccount storageAccount = CloudStorageAccount.Parse(storageConnectionString);
 
                 // Create a blob client for interacting with the blob service.
                 blobClient = storageAccount.CreateCloudBlobClient();
@@ -112,7 +119,7 @@ namespace WebApp_Storage_DotNet.Controllers
                     for (int i = 0; i < fileCount; i++)
                     {
                         CloudBlockBlob blob = blobContainer.GetBlockBlobReference(files[i].FileName);
-                        await blob.UploadFromFileAsync("C:/Users/hebrevar/Pictures/" + files[i].FileName, FileMode.Open);
+                        await blob.UploadFromFileAsync(pictureDirectoryPath + files[i].FileName, FileMode.Open);
                     }
                 }
                 return RedirectToAction("Index");
