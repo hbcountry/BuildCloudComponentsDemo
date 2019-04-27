@@ -19,11 +19,8 @@ namespace WebApp_Storage_DotNet.Controllers
     using System.Web;
     using System.Threading.Tasks;
     using System.IO;
-    using Microsoft.WindowsAzure;
     using Microsoft.WindowsAzure.Storage;
     using Microsoft.WindowsAzure.Storage.Blob;
-    using Microsoft.Azure;
-    using System.Configuration;
 
     /// <summary> 
     /// Azure Blob Storage Photo Gallery - Demonstrates how to use the Blob Storage service.  
@@ -50,11 +47,7 @@ namespace WebApp_Storage_DotNet.Controllers
 
 		// Constants
 	    private const string blobContainerName = "builddemo";
-	    private const string storageConnectionString =
-		    "DefaultEndpointsProtocol=https;AccountName=msftbuilddemo;AccountKey=PYgIVLKz8Qt5/" +
-		    "2maPE8/zZOZDMZw1o3o+SeNEGnEgkxDg47FswLk53cNYXt4u7kdFrpbeyDSiPUaVYCnWglO8A==" +
-		    ";EndpointSuffix=core.windows.net";
-	    private const string pictureDirectoryPath = "C:/Users/hebrevar/Pictures/";
+	    private const string storageConnectionString = "[InsertConnectionString]";
 
 		/// <summary> 
 		/// Task<ActionResult> Index() 
@@ -119,7 +112,7 @@ namespace WebApp_Storage_DotNet.Controllers
                     for (int i = 0; i < fileCount; i++)
                     {
                         CloudBlockBlob blob = blobContainer.GetBlockBlobReference(files[i].FileName);
-                        await blob.UploadFromFileAsync(pictureDirectoryPath + files[i].FileName, FileMode.Open);
+                        await blob.UploadFromStreamAsync(files[i].InputStream);
                     }
                 }
                 return RedirectToAction("Index");
